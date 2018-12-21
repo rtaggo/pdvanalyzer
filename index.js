@@ -33,6 +33,8 @@ const escapeHtml = require('escape-html');
  */
 exports.pdvAnalyzerPubSub = (event, callback) => {
   const pubsubMessage = event.data;
+  const pdvworker = require('./lib/pdvworker.js');
+
   if (!pubsubMessage.data) {
     callback(new Error('Message data is missing'));    
   }  
@@ -52,9 +54,12 @@ exports.pdvAnalyzerPubSub = (event, callback) => {
   //console.log(`Hello, ${name}!`);  
   let context = event.context;
   console.log(`Context EventID: ${context.eventId}`);
-  console.log(`Table : ${content.table}`);
   console.log(`sirets : ${content.sirets}`);
+  pdvworker.pdvanalysing(context.eventId, content.sirets, res => {
+    console.log('analysisResult : ' + JSON.parse(res));
+  });
   callback();
+//  const resulAnalysis = await pdvworker.pdvanalysing(context.eventId, content.sirets()
 };
 // [END functions_pdvanalyzer_pubsub]
 
